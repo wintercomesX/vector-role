@@ -1,0 +1,20 @@
+input {
+  file {
+    path: '/var/lib/vector/input/input_file'
+    scan_interval: '5s'
+  }
+}
+
+filter {
+  convert {
+    field: 'value'
+    to: 'string'
+  }
+}
+
+output {
+  kafka {
+    bootstrap_servers: 'localhost:9092'
+    topic: 'my_topic'
+  }
+}

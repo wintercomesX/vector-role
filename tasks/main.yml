@@ -1,0 +1,25 @@
+---
+- name: Get Vector distrib
+  get_url:
+    url: "https://packages.timber.io/vector/0.44.0/vector_0.44.0-1_amd64.deb"
+    dest: "./vector_0.44.0-1_amd64.deb"
+  retries: 3
+  delay: 10
+
+- name: Install Vector
+  ansible.builtin.apt:
+    deb: "./vector_0.44.0-1_amd64.deb"
+    state: present
+
+- name: Deploy Vector configuration
+  become: true
+  ansible.builtin.template:
+    src: templates/vector.yml.j2
+    dest: /etc/vector/vector.toml
+  notify: Restart vector service
+
+- name: Start Vector service
+  become: true
+  ansible.builtin.service:
+    name: vector
+    state: started
